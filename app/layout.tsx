@@ -1,5 +1,6 @@
 import './globals.css';
 import type { Metadata } from 'next';
+import { Suspense } from 'react';
 import { ToastProvider } from '@/components/toast-provider';
 import { ToastQueryListener } from '@/components/toast-query-listener';
 
@@ -17,7 +18,9 @@ export default function RootLayout({
     <html lang="en">
       <body suppressHydrationWarning>
         {children}
-        <ToastQueryListener />
+        <Suspense fallback={null}>
+          <ToastQueryListener />
+        </Suspense>
         <ToastProvider />
       </body>
     </html>
