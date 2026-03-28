@@ -1,0 +1,225 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  admin
+  advisor
+}
+
+enum ListingType {
+  native
+  advisor
+  external
+}
+
+enum ListingStatus {
+  draft
+  active
+  on_hold
+  matched
+  archived
+}
+
+enum VisibilityMode {
+  private
+  match_only
+  shared
+}
+
+model User {
+  id                   String    @id @default(cuid())
+  firstName            String
+  lastName             String
+  email                String    @unique
+  passwordHash         String
+  role                 Role
+  activeStatus         Boolean   @default(true)
+  ghlSubaccountId      String?
+  googleSheetSourceId  String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  ownedListings        Listing[] @relation("OwnerListings")
+  assignedListings     Listing[] @relation("AssignedListings")
+  sharedListings       ListingShare[]
+  buyers               Buyer[]
+}
+
+model Listing {
+  id                       String        @id @default(cuid())
+  title                    String
+  listingType              ListingType
+  status                   ListingStatus @default(draft)
+  ownerUserId              String
+  assignedUserId           String?
+  businessName             String?
+  industry                 String
+  subindustry              String?
+  locationCity             String?
+  locationStateProvince    String?
+  locationCountry          String?
+  askingPrice              Float?
+  revenue                  Float?
+  ebitda                   Float?
+  sde                      Float?
+  employees                Int?
+  businessSummary          String?
+  recurringRevenuePercent  Float?
+  businessModel            String?
+  customerType             String?
+  growthProfile            String?
+  reasonForSale            String?
+  targetBuyerTypes         String
+  minEv                    Float?
+  maxEv                    Float?
+  structureType            String?
+  geographicTags           String
+  industryTags             String
+  confidentialityLevel     String?
+  visibilityScope          String?
+  sourceType               String?
+  sourceUrl                String?
+  sourcePlatform           String?
+  sourceListingId          String?
+  advisorNotes             String?
+  createdAt                DateTime      @default(now())
+  updatedAt                DateTime      @updatedAt
+  owner                    User          @relation("OwnerListings", fields: [ownerUserId], references: [id])
+  assignedUser             User?         @relation("AssignedListings", fields: [assignedUserId], references: [id])
+  shares                   ListingShare[]
+  matches                  Match[]
+}
+
+model ListingShare {
+  id          String   @id @default(cuid())
+  listingId   String
+  userId      String
+  createdAt   DateTime @default(now())
+  listing     Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([listingId, userId])
+}
+
+model Buyer {
+  id                        String   @id @default(cuid())
+  firstName                 String?
+  lastName                  String?
+  fullName                  String?
+  companyName               String?
+  emailPrimary              String?  @unique
+  phonePrimary              String?
+  website                   String?
+  linkedinUrl               String?
+  buyerType                 String?
+  industriesOfInterest      String
+  subindustriesOfInterest   String
+  geographyOfInterest       String
+  minRevenue                Float?
+  maxRevenue                Float?
+  minEbitda                 Float?
+  maxEbitda                 Float?
+  minEv                     Float?
+  maxEv                     Float?
+  structurePreferences      String
+  ownerUserId               String?
+  sourceSystem              String?
+  sourceRecordId            String?
+  sourceSubaccountId        String?
+  relationshipStrengthScore Float?
+  activeStatus              Boolean  @default(true)
+  lastActivityDate          DateTime?
+  visibilityMode            VisibilityMode @default(shared)
+  dedupeMasterKey           String?
+  duplicateGroupId          String?
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+  owner                     User?    @relation(fields: [ownerUserId], references: [id])
+  sourceRecords             BuyerSourceRecord[]
+  matches                   Match[]
+}
+
+model BuyerSourceRecord {
+  id                      String   @id @default(cuid())
+  sourceSystem            String
+  sourceRecordId          String
+  sourceSubaccountId      String?
+  sourceOwnerUserId       String?
+  rawPayloadJson          String
+  normalizedEmail         String?
+  normalizedPhone         String?
+  normalizedCompany       String?
+  normalizedName          String?
+  linkedMasterBuyerId     String?
+  duplicateConfidenceScore Float?
+  duplicateStatus         String?
+  mergeReviewRequired     Boolean  @default(false)
+  importTimestamp         DateTime @default(now())
+  lastSyncTimestamp       DateTime @default(now())
+  buyer                   Buyer?   @relation(fields: [linkedMasterBuyerId], references: [id])
+
+  @@unique([sourceSystem, sourceRecordId])
+}
+
+model Match {
+  id                  String   @id @default(cuid())
+  listingId           String
+  buyerId             String
+  totalScore          Float
+  industryScore       Float
+  sizeScore           Float
+  geographyScore      Float
+  structureScore      Float
+  buyerTypeScore      Float
+  activityScore       Float
+  relationshipScore   Float
+  explanationText     String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  listing             Listing  @relation(fields: [listingId], references: [id], onDelete: Cascade)
+  buyer               Buyer    @relation(fields: [buyerId], references: [id], onDelete: Cascade)
+
+  @@unique([listingId, buyerId])
+}
+
+model IntegrationSetting {
+  id                          String   @id
+  googleOauthClientId         String?
+  googleOauthClientSecret     String?
+  googleAccessToken           String?
+  googleRefreshToken          String?
+  googleTokenExpiresAt        DateTime?
+  googleConnectedEmail        String?
+  googleServiceAccountEmail   String?
+  googleServiceAccountKey     String?
+  googleSheetId               String?
+  googleSheetTab              String?
+  googleFieldMappingJson      String   @default("{}")
+  ghlOauthClientId            String?
+  ghlOauthClientSecret        String?
+  ghlAuthorizeUrl             String?  @default("https://marketplace.gohighlevel.com/oauth/chooselocation")
+  ghlTokenUrl                 String?  @default("https://services.leadconnectorhq.com/oauth/token")
+  ghlAccessToken              String?
+  ghlRefreshToken             String?
+  ghlTokenExpiresAt           DateTime?
+  ghlConnectedCompanyId       String?
+  ghlApiBaseUrl               String?  @default("https://services.leadconnectorhq.com")
+  ghlApiKey                   String?
+  ghlTagFiltersJson           String   @default("[\"buyer-profile-sent\",\"access-granted\",\"nda-signed\"]")
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model OAuthState {
+  id          String   @id @default(cuid())
+  provider    String
+  state       String   @unique
+  redirectUri String
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+}

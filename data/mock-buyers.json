@@ -1,0 +1,64 @@
+{
+  "googleSheets": [
+    {
+      "id": "sheet_1",
+      "ownerUserId": "seed-advisor-1",
+      "firstName": "Sarah",
+      "lastName": "Mitchell",
+      "email": "sarah@northpeakcapital.com",
+      "phone": "+1 (416) 555-1100",
+      "company": "North Peak Capital",
+      "buyerType": "pe",
+      "industries": ["Healthcare", "Business Services"],
+      "geographies": ["Canada", "Ontario"],
+      "minEv": 1000000,
+      "maxEv": 12000000
+    },
+    {
+      "id": "sheet_2",
+      "ownerUserId": "seed-advisor-1",
+      "firstName": "James",
+      "lastName": "Rivera",
+      "email": "jrivera@atlasops.com",
+      "phone": "+1 647-555-2233",
+      "company": "Atlas Ops",
+      "buyerType": "operator",
+      "industries": ["Manufacturing", "Industrial Services"],
+      "geographies": ["USA", "Texas", "Florida"],
+      "minEv": 500000,
+      "maxEv": 4000000
+    }
+  ],
+  "ghl": [
+    {
+      "id": "ghl_1",
+      "subaccountId": "sub_123",
+      "ownerUserId": "seed-advisor-1",
+      "firstName": "Sarah",
+      "lastName": "Mitchell",
+      "email": "sarah@northpeakcapital.com",
+      "phone": "4165551100",
+      "company": "North Peak Capital Inc.",
+      "buyerType": "pe",
+      "industries": ["Healthcare"],
+      "geographies": ["Ontario"],
+      "minEv": 1500000,
+      "maxEv": 10000000
+    },
+    {
+      "id": "ghl_2",
+      "subaccountId": "sub_555",
+      "ownerUserId": "seed-advisor-2",
+      "firstName": "Emma",
+      "lastName": "Brooks",
+      "email": "emma@harborfo.com",
+      "phone": "+1 917 555 8899",
+      "company": "Harbor Family Office",
+      "buyerType": "family_office",
+      "industries": ["Consumer", "Food & Beverage"],
+      "geographies": ["USA", "New York"],
+      "minEv": 2000000,
+      "maxEv": 15000000
+    }
+  ]
+}

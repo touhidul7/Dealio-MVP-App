@@ -1,0 +1,73 @@
+Absolutely. Here is a clear developer brief / MVP build spec you can send directly to your app developer. Dealio Marketplace MVP Build Spec Phase 1 Objective Build an internal - only proprietary Dealio marketplace and matching engine . This is not a public marketplace in phase
+
+1. It is an internal system that allows Dealio to: Ɣ store native and advisor - submitted opportunities Ɣ track external opportunities from third - party m arketplaces Ɣ sync buyers from Google Sheets and GoHighLevel Ɣ deduplicate buyer records into one master buyer graph Ɣ score and recommend the best buyers for each listing The purpose of phase 1 is to create the core intelligence and matching infrastructure , not a full document/data room platform.
+
+1. Core MVP Modules to Build Build these 8 modules now:
+
+1. Auth + Roles
+
+2. Listings Module
+
+3. External Opportunity Tracker
+
+4. Buyer Graph Database
+
+5. Google Sheets Sync
+
+6. GHL Sync
+
+7. Dedupe Engine
+
+8. Match Scoring Engine
+
+2. Product Rules / Scope Internal only Ɣ App is not public Ɣ Only Dealio admins and advisors can log in Ɣ No public signup in phase 1 Listings types Support 3 listing types: Ɣ Native Listing = our own deal/off - market opportunity Ɣ Advisor Listing = submitted by a De alio advisor Ɣ External Opportunity = tracked listing from outside marketplace, stored as a source - linked record Buyers Buyers come from: Ɣ Google Sheets CRM Ɣ GHL subaccounts Ɣ manual entry later if needed Matching Every listing should generate recommended buyers based on a weighted fit score.
+
+3. Recommended MVP Architecture Developer can use preferred stack, but app should be built around these concepts: Frontend Ɣ internal web app dashboard Backend Ɣ API + database Ɣ sync jobs / scheduled jobs Ɣ admin controls Database Need normalized relational structure or clean document structure . Integrations Ɣ Google Sheets API Ɣ GoHighLevel API
+
+4. User Roles and Permissions Build these roles: Admin Can: Ɣ view all users Ɣ view all listings Ɣ view all buyers Ɣ view all matches Ɣ run syncs Ɣ manage scoring weights Ɣ manage advisor permissions Advisor Can: Ɣ create/edit own listings Ɣ view own buyers Ɣ view match recommendations for listings they can access Ɣ view externally tracked opportunities if shared Ɣ not edit platform settings Optional later Ɣ Analyst Ɣ Read - only reviewer For MVP, just do: Ɣ Admin Ɣ Advisor
+
+5. Auth + Roles Module Requirements Build login system with: Ɣ email + password Ɣ role - based access control Ɣ user profile record Ɣ advisor ownership mapping User table fields Ɣ id Ɣ first_name Ɣ last_name Ɣ email Ɣ password_hash Ɣ role (admin, advisor) Ɣ active_status Ɣ ghl_subaccount_id (nullable) Ɣ google_sheet_source_id (nullable) Ɣ created_at Ɣ updated_at Permissions logic Ɣ Admin sees everything Ɣ Advisor sees: ż own listings ż shared listings ż own buyer records ż match suggestions where permitted
+
+6. Listings Module This is the main opportunity database. Listing types Field: listing_type Allowed values: Ɣ native Ɣ advisor Ɣ external Listing statuses Field: status Allowed values: Ɣ draft Ɣ active Ɣ on_hold Ɣ matched Ɣ archived Listing fields Build these fields: Core identifiers Ɣ id Ɣ title Ɣ listing_type Ɣ owner_user_id Ɣ assigned_user_id Ɣ status Business info Ɣ business_name_nullable Ɣ industry Ɣ subindustry Ɣ location_city Ɣ location_state_province Ɣ location_country Ɣ asking_price_nullable Ɣ revenue_nullable Ɣ ebitda_nullable Ɣ sde_nullable Ɣ employees_nullable Business profile Ɣ business_summary Ɣ recurring_revenue_percent_nullable Ɣ business_model Ɣ customer_type Ɣ growth_profile Ɣ reason_for_sale_nullable Buyer - fit metadata Ɣ target_buyer_types (array) Ɣ min_ev_nullable Ɣ max_ev_nullable Ɣ structure_type Ɣ geographic_tags (array) Ɣ industry_tags (array) Visibility / control Ɣ confidentiality_level Ɣ visibility_scope Ɣ source_type Ɣ source_url_nullable Ɣ source_platform_nullable Ɣ source_listing_id_nullable System Ɣ created_at Ɣ updated_at Listing form behavior Native / Advisor listing Allow internal users to create a full listing manually. External opportunity Allow internal users to create a lightweight tracked record: Ɣ title Ɣ source platform Ɣ source URL Ɣ industry Ɣ location Ɣ asking price if visible Ɣ summary/notes Ɣ assigned advisor Important: For external opportunity records, think of these as tracked opportunities , not copied public marketplace clones.
+
+7. External Opportunity Tracker This can be part of Listings Module, but should have its own view/filter. Purpose Track deals found on external sites and manually store source - linked intelligence. Required fields Ɣ title Ɣ source_platform Ɣ source_url Ɣ source_listing_id_nullable Ɣ advisor_notes Ɣ category Ɣ location Ɣ price_range_nullable Ɣ seller_type_nullable Ɣ assigned_user_id Ɣ status Required views Ɣ all external opportunities Ɣ by assigned advisor Ɣ by source platform Ɣ by status Ɣ by industry
+
+8. Buyer Graph Database This is the most important part of the MVP. Need one master buyer table that consolidates all buyers fr om all sources. Buyer master record fields Identity Ɣ id Ɣ first_name Ɣ last_name Ɣ full_name Ɣ company_name Ɣ email_primary Ɣ phone_primary Ɣ website_nullable Ɣ linkedin_url_nullable Buyer profile Ɣ buyer_type ż strategic ż pe ż family_office ż search_fund ż independent_sponsor ż operator ż lender ż other Ɣ industries_of_interest (array) Ɣ subindustries_of_interest (array) Ɣ geography_of_interest (array) Ɣ min_revenue_nullable Ɣ max_revenue_nullable Ɣ min_ebitda_nullable Ɣ max_ebitda_nullable Ɣ min_ev_nullable Ɣ max_ev_nullable Ɣ structure_preferences (array) Relationship data Ɣ owner_user_id Ɣ source_system Ɣ source_record_id Ɣ source_subaccount_id_nullable Ɣ relationship_strength_score_nullable Ɣ active_status Ɣ last_activity_date_nullable Visibility Ɣ visibility_mode ż private ż m atch_only ż shared System Ɣ created_at Ɣ updated_at Ɣ dedupe_master_key Ɣ duplicate_group_id_nullable
+
+9. Buyer Source Record Table Do not rely only on master buyer table. Need a second table for raw source records. Purpose Keep the imported source records separate from merged master profiles. Fields Ɣ id Ɣ source_system (google_sheets, ghl) Ɣ source_record_id Ɣ source_subaccount_id_nullable Ɣ source_owner_user_id_nullable Ɣ raw_payload_json Ɣ normalized_email_nullable Ɣ normalized_phone_nul lable Ɣ normalized_company_nullable Ɣ normalized_name_nullable Ɣ linked_master_buyer_id_nullable Ɣ import_timestamp Ɣ last_sync_timestamp This allows: Ɣ auditability Ɣ re - syncing Ɣ merge correction later
+
+10. Google Sheets Sync Build a sync service that imports buyer records from Google Sheets. Sync method Ɣ manual sync button in admin Ɣ optional scheduled sync every X hours Assumption Each advisor may have their own sheet or tab, or there may be one central CRM sheet. Developer shou ld build the sync so the source sheet/tab can be mapped in settings. Initial fields to map from sheet At minimum support: Ɣ first_name Ɣ last_name Ɣ email Ɣ phone Ɣ company Ɣ buyer_type Ɣ industry_interest Ɣ geography_interest Ɣ size criteria Ɣ notes Ɣ owner/advisor Sync behavior Ɣ fetch rows Ɣ normalize fields Ɣ create/update source records Ɣ pass records to dedupe engine Ɣ create/update master buyer records Admin controls Need: Ɣ connect Google account / service auth Ɣ define sheet ID Ɣ define tab name Ɣ field mapping U I or config Ɣ run sync button Ɣ last sync timestamp Ɣ sync success/error log
+
+11. GHL Sync %XLOGDV\QFVHUYLFHIRU*R+LJK/HYHOFRQWDFWVIURPHDFKDGYLVRU¶VVXEDFFRXQW Requirements Ɣ connect each advisor user to a GHL subaccount ID Ɣ fetch contacts from subaccount Ɣ normalize contact fields Ɣ store source record Ɣ pass to dedupe engine Ɣ create/update master buyer record Minimum imported fields Ɣ first_name Ɣ last_name Ɣ email Ɣ phone Ɣ company Ɣ tags Ɣ custom fields if available Ɣ last activity date Ɣ owner/subaccount identifier Important The system should not assume all GHL contacts are buyers. Need one of these approaches: Option A Only import contacts tagged as buyer/investor/acquirer Option B Import all contacts but classify only certain tagged contacts into buyer graph For MVP, I recommend: Only import tagged buyer - type contacts. Use tags like: Ɣ buyer Ɣ investor Ɣ acquirer Ɣ pe Ɣ family of fice Ɣ searcher Developer should make import filters configurable. Admin controls Ɣ connect GHL API Ɣ map subaccount to advisor user Ɣ define tag filters Ɣ run sync Ɣ sync logs Ɣ error logs
+
+12. Dedupe Engine This is critical. Need logic that merges duplicate buyers from multiple sources into one master buyer profile. Matching priority rules Strong match Merge automatically when: Ɣ same normalized email Medium match Potential duplicate when: Ɣ same phone Ɣ or same full name + same company Ɣ or same domain + similar name Weak match Flag for review when: Ɣ similar company + similar first/last name Ɣ or similar email domain + title/company similarity Dedupe outputs For each imported source record: Ɣ linked to existing master buyer or Ɣ creates new master buyer or Ɣ flagged for review queue Normalization rules Normalize: Ɣ email lowercase trimmed Ɣ phone digits only Ɣ company stripped of punctuation/common suffixes where possible Ɣ names trimmed/cased consistently Required tables/fields Need: Ɣ duplicate_confidence_score Ɣ duplicate_status Ɣ merge_review_required boolean Admin review queue Build a simple duplicate review page: Ɣ source record A Ɣ possible master match B Ɣ confidence score Ɣ accept merge Ɣ reject merge Ɣ create new master
+
+13. Match Scoring Engine This is the core value engine. For each listing, generate buyer match scores from master buyer records. Matching inputs Listing side Ɣ industry Ɣ subindustry Ɣ location Ɣ revenue Ɣ EBITDA Ɣ EV / asking price Ɣ structure type Ɣ target buyer types Buyer side Ɣ industries of interest Ɣ subindustries of intere st Ɣ geography of interest Ɣ revenue/EBITDA/EV criteria Ɣ structure preferences Ɣ buyer type Ɣ active status Ɣ relationship strength Ɣ recency MVP scoring weights Use weighted rule - based scoring first. Suggested weights Ɣ industry fit = 30 Ɣ size fit = 20 Ɣ geography fit = 10 Ɣ structure fit = 15 Ɣ buyer type fit = 15 Ɣ activity recency = 5 Ɣ relationship strength = 5 Total = 100 Scoring definitions Industry fit Ɣ exact subindustry match = full score Ɣ same industry, different subindustry = medium - high Ɣ adjacent industry = medium Ɣ unrelated = low/zero Size fit Compare listing revenue/EBITDA/EV to buyer target range. Geography fit Ɣ same target geography = high Ɣ adjacent region = medium Ɣ outside preferred geography = low Structure fit Compare listing structure to buyer structure preference. Buyer type fit If listing targets strategic/PE/operator etc. Activity recency Recent active buyer gets more points. Relationship strength If advisor kn ows them well, boost slightly. Match output table Create a matches table with: Ɣ id Ɣ listing_id Ɣ buyer_id Ɣ total_score Ɣ industry_score Ɣ size_score Ɣ geography_score Ɣ structure_score Ɣ buyer_type_score Ɣ activity_score Ɣ relationship_score Ɣ explanation_text Ɣ created_at Ɣ updated_at Explanation text Generate a simple explanation string such as: Ɣ "Strong industry fit, size fits target range, active in Ontario, prefers majority acquisitions." This can be rule - based in MVP.
+
+14. Key Screens to Build Admin Ɣ login Ɣ dashboard Ɣ users Ɣ sync center Ɣ listings Ɣ buyers Ɣ duplicate review queue Ɣ matches Advisor Ɣ dashboard Ɣ my listings Ɣ all shared listings Ɣ my buyers Ɣ suggested matches Ɣ external opportunities
+
+15. Dashboard Requirements Admin dashboard Show: Ɣ total listings Ɣ active listings Ɣ external opportunities Ɣ total buyers Ɣ unresolved duplicates Ɣ recent syncs Ɣ top matche d listings Advisor dashboard Show: Ɣ my listings Ɣ my buyers Ɣ recently matched opportunities Ɣ external opportunities assigned to me Ɣ sync status for my GHL source
+
+16. Minimum Filters/Search Listings filters Ɣ type Ɣ status Ɣ owner Ɣ assigned advisor Ɣ industry Ɣ location Buyers filters Ɣ buyer type Ɣ owner Ɣ source system Ɣ visibility mode Ɣ industry interest Ɣ geography interest Matches filters Ɣ listing Ɣ buyer type Ɣ minimum score Ɣ advisor owner
+
+17. Recommended Build Order Tell developer to build in this order: Sprint 1 Ɣ auth Ɣ users/roles Ɣ database schema Ɣ listings CRUD Ɣ external opportunity tracker Sprint 2 Ɣ buyer master table Ɣ buyer source record table Ɣ Google Sheets sync Ɣ GHL sync Sprint 3 Ɣ dedupe engine Ɣ duplicate review queue Ɣ match scoring engine Ɣ match results UI Sprint 4 Ɣ dashboards Ɣ filters/search Ɣ admin sync controls Ɣ QA and cleanup
+
+18. MVP Success Criteria Phase 1 is successful if the app can do the following:
+
+1. Admin and advisors can log in
+
+2. Users can cre ate native/advisor/external listings
+
+3. System can import buyer contacts from Google Sheets
+
+4. System can import buyer contacts from GHL subaccounts
+
+5. System can deduplicate contacts into one buyer graph
+
+6. System can calculate top matching buyers for any listing
+
+7. Use rs can view recommended buyers with score explanations
+
+19. Explicit Non - Goals for Phase 1 Do not build these yet: Ɣ public - facing marketplace Ɣ seller portal Ɣ buyer portal Ɣ in - app data room Ɣ e - signature Ɣ NDA automation Ɣ messaging/chat Ɣ email outreach automation Ɣ AI - generated buyer recommendations beyond rule - based scoring Ɣ payment system Those come later.
+
+20. Short Version You Can Paste to Developer Build an internal - only Dealio Marketplace MVP with the following modules: authentication and role - based access, listings module, external opportunity tracker, buyer graph database, Google Sheets sync, GoHighLevel sync, deduplication engine, and buyer - to - listing match scoring engine. The platform should support 3 listing types: native listings, advisor - submitted listings, and external opportunity records. External records are source - linked tracked opportunities, not full copied external marketplace listings. The system should sync buyer data from Google Sheets and advisor GHL subaccounts into ra w source tables, normalize and deduplicate those records into one master buyer graph, and then score buyers against listings using rule - based weighted matching. Core roles are Admin and Advisor. Admin can see everything and manage syncs/settings. Advisors can manage their own listings and see authorized matches and buyers. The main deliverable is a working internal dashboard where Dealio can create listings, sync buyers, merge duplicates, and see the top recommended buyers for each listing. ¬
