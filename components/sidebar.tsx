@@ -14,15 +14,15 @@ export async function Sidebar() {
         </div>
       </div>
       <nav className="grid">
-        <Link href="/dashboard">Dashboard</Link>
-        <Link href="/listings">Listings</Link>
-        <Link href="/listings/new">New Listing</Link>
-        <Link href="/external-opportunities">External Opportunities</Link>
-        <Link href="/buyers">Buyers</Link>
-        <Link href="/matches">Matches</Link>
-        <Link href="/duplicates">Duplicate Queue</Link>
-        {user?.role === 'admin' ? <Link href="/users">Users</Link> : null}
-        <Link href="/sync-center">Sync Center</Link>
+        <Link href="/dashboard" prefetch={false}>Dashboard</Link>
+        <Link href="/listings" prefetch={false}>Listings</Link>
+        <Link href="/listings/new" prefetch={false}>New Listing</Link>
+        <Link href="/external-opportunities" prefetch={false}>External Opportunities</Link>
+        <Link href="/buyers" prefetch={false}>Buyers</Link>
+        <Link href="/matches" prefetch={false}>Matches</Link>
+        <Link href="/duplicates" prefetch={false}>Duplicate Queue</Link>
+        {user?.role === 'admin' ? <Link href="/users" prefetch={false}>Users</Link> : null}
+        <Link href="/sync-center" prefetch={false}>Sync Center</Link>
       </nav>
     </aside>
   );
