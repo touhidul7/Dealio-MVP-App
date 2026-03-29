@@ -51,9 +51,9 @@ export default async function ListingsPage({
 
   return (
     <div className="layout">
-      <Sidebar />
+      <Sidebar user={user} />
       <main className="content">
-        <TopHeader />
+        <TopHeader user={user} />
         <div className="page-header">
           <div>
             <h1 className="page-title">Listings</h1>
@@ -178,3 +178,4 @@ export default async function ListingsPage({
     </div>
   );
 }
+

@@ -65,9 +65,9 @@ export default async function NewListingPage() {
 
   return (
     <div className="layout">
-      <Sidebar />
+      <Sidebar user={user} />
       <main className="content">
-        <TopHeader />
+        <TopHeader user={user} />
         <div className="card">
           <h1>New Listing</h1>
           <form action={createListing} className="grid grid-2">
@@ -135,3 +135,4 @@ export default async function NewListingPage() {
     </div>
   );
 }
+

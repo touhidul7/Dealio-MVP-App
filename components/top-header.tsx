@@ -1,13 +1,11 @@
-import { getCurrentUser, logout } from '@/lib/auth';
+import type { AppShellUser } from '@/components/app-shell-user';
+import { logout } from '@/lib/auth';
 
 function initials(firstName: string, lastName: string) {
   return `${firstName?.[0] || ''}${lastName?.[0] || ''}`.toUpperCase() || 'U';
 }
 
-export async function TopHeader() {
-  const user = await getCurrentUser();
-  if (!user) return null;
-
+export function TopHeader({ user }: { user: AppShellUser }) {
   async function signOut() {
     'use server';
     await logout();

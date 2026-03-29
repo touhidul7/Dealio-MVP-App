@@ -121,9 +121,9 @@ export default async function EditListingPage({
 
   return (
     <div className="layout">
-      <Sidebar />
+      <Sidebar user={user} />
       <main className="content">
-        <TopHeader />
+        <TopHeader user={user} />
         <form action={updateListing} className="card grid grid-2">
           <h1>Edit Listing</h1>
           <input className="input" name="title" placeholder="Title" defaultValue={listing.title} required />
@@ -198,3 +198,4 @@ export default async function EditListingPage({
     </div>
   );
 }
+

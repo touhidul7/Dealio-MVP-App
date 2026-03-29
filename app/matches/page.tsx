@@ -40,9 +40,9 @@ export default async function MatchesPage({
 
   return (
     <div className="layout">
-      <Sidebar />
+      <Sidebar user={user} />
       <main className="content">
-        <TopHeader />
+        <TopHeader user={user} />
         <div className="page-header">
           <div>
             <h1 className="page-title">Matches</h1>
@@ -141,3 +141,4 @@ export default async function MatchesPage({
     </div>
   );
 }
+

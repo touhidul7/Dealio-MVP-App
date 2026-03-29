@@ -59,9 +59,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="layout">
-      <Sidebar />
+      <Sidebar user={user} />
       <main className="content">
-        <TopHeader />
+        <TopHeader user={user} />
         <div className="dashboard-header">
           <div>
             <h1 className="dashboard-title">Dashboard</h1>
@@ -262,3 +262,4 @@ export default async function DashboardPage() {
     </div>
   );
 }
+
